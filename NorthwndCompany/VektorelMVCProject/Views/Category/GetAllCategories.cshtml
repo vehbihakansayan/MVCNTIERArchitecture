@@ -1,0 +1,248 @@
+﻿@model List<Category>
+
+<div>
+    <table id="tblCategories" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Kategori Resim</th>
+                <th>Kategori No</th>
+                <th>Kategori Adı</th>
+                <th>Kategori Açıklama</th>
+                <th>Kategori Sil</th>
+                <th>Kategori Güncelle</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td id="tdPhoto">
+                        @{
+                            if (item.CategoryID < 9)
+                            {
+                                <img src="@("data:image/png;base64," + item.Base64Photo)" />
+                            }
+                            else if (item.CategoryID >= 9)
+                            {
+                                <img src="~/image/categoryPhoto/@item.categoryPhoto" />
+                            }
+                        }
+                    </td>
+                    <td id="tdDelete">@item.CategoryID</td>
+                    <td id="tdCName">@item.CategoryName</td>
+                    <td id="tdDesc">@item.Description</td>
+                    <td><button id="btnDelete" class="btn btn-danger">Sil</button></td>
+                    <td><button id="btnUpdate" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUpdateCategory">Güncelle</button></td>
+                    <td><button id="btnGetProducts" class="btn btn-info">Ürünler</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalAddCategory">Kategori Ekle</button>
+<div class="modal fade" id="modalAddCategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Yeni Kategori Ekleme Formu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formAddCategory" class="row g-3 needs-validation" novalidate>
+                    <div class="col-md-6">
+                        <label for="validationCustom01" class="form-label">Kategori Adı</label>
+                        <input type="text" class="form-control" id="validationCustom01" placeholder="Kategori Adı" required>
+                        <div class="invalid-feedback">
+                            Lütfen kategori adını yazınız.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="validationCustom02" class="form-label">Açıklama</label>
+                        <textarea type="text" class="form-control" id="validationCustom02" placeholder="Açıklama" required></textarea>
+                        <div class="invalid-feedback">
+                            Lütfen kategori açıklamasını yazınız.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="validationCustom3" class="form-label">Kategori Resmi</label>
+                        <input type="file" class="form-control" id="validationCustom3" aria-label="file example" required>
+                        <div class="invalid-feedback">Lütfen bir resim dosyası seçiniz</div>
+                    </div>                 
+                    <div class="col-12">
+                        <div class="modal-footer">
+                            <button id="btnx" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                            <button id="btnAddCategory" class="btn btn-primary" type="button">Kaydet</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalUpdateCategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Yeni Kategori Ekleme Formu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formUpdateCategory" class="row g-3 needs-validation" novalidate>
+                    <div class="col-md-6">
+                        <label for="validationCustom01" class="form-label">Kategori Adı</label>
+                        <input type="text" class="form-control" id="validationCustom01" placeholder="Kategori Adı" required>
+                        <div class="invalid-feedback">
+                            Lütfen kategori adını yazınız.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="validationCustom02" class="form-label">Açıklama</label>
+                        <textarea type="text" class="form-control" id="validationCustom02" placeholder="Açıklama" required></textarea>
+                        <div class="invalid-feedback">
+                            Lütfen kategori açıklamasını yazınız.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="validationCustom3" class="form-label">Kategori Resmi</label>
+                        <input type="file" class="form-control" id="validationCustom3" aria-label="file example" required>
+                        <div class="invalid-feedback">Lütfen bir resim dosyası seçiniz</div>
+                    </div>
+                    <div class="col-12">
+                        <div class="modal-footer">
+                            <button id="btnx" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                            <button id="btnUpdateCategory" class="btn btn-primary" type="button">Kaydet</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section categoryScript{ 
+
+    <script>
+
+        $(document).ready(function () {
+
+
+            $("#tblCategories").DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/tr.json"
+                },
+            });
+
+        $("#btnAddCategory").click(function () {
+
+            var cName = $("#validationCustom01").val();
+            var cDescription = $("#validationCustom02").text();
+            var cPhoto = $("#validationCustom03").get(0).files[0];
+            var formData = new FormData();
+            formData.append("CategoryName", cName);
+            formData.append("Description", cDescription);
+            formData.append("categoryPhoto", cPhoto);
+
+            $.ajax({
+
+                url: "/Category/AddCategory",
+                method: "post",
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function (response) {
+                    if (response.result) {
+                        Command: toastr["success"](response.message)
+
+                        toastr.options = {
+                            "closeButton": true,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": false,
+                            "positionClass": "toast-top-right",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": "300",
+                            "hideDuration": "1000",
+                            "timeOut": "5000",
+                            "extendedTimeOut": "1000",
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                        }
+                        var addtr = `<tr>
+                                        <td id="tdPhoto"><img src="~/image/categoryPhoto/"`+ response.newCtg.categoryPhoto + `/></td>
+                                        <td id="tdDelete">`+ response.newCtg.categoryID + `</td>
+                                        <td id="tdCName">`+ response.newCtg.categoryName + `</td>
+                                        <td id="tdDesc">`+ response.newCtg.description + `</td>
+                                        <td><button id="btnDelete" class="btn btn-danger">Sil</button></td>
+                                        <td><button id="btnUpdate" class="btn btn-primary">Güncelle</button></td>
+                                        <td><button id="btnGetProducts" class="btn btn-info">Ürünler</button></td>
+                                    </tr>`
+
+                        $("#tblCategories").append(addtr);
+                        close();
+                    } else {
+
+                        var rp = response.message.errors
+                        for (var i = 0; i < rp.length; i++) {
+                            Command: toastr["error"](rp[i].message);
+
+                            toastr.options = {
+                                "closeButton": true,
+                                "debug": false,
+                                "newestOnTop": false,
+                                "progressBar": false,
+                                "positionClass": "toast-top-right",
+                                "preventDuplicates": false,
+                                "onclick": null,
+                                "showDuration": "300",
+                                "hideDuration": "1000",
+                                "timeOut": "5000",
+                                "extendedTimeOut": "1000",
+                                "showEasing": "swing",
+                                "hideEasing": "linear",
+                                "showMethod": "fadeIn",
+                                "hideMethod": "fadeOut"
+                            }
+
+                        }
+
+                    }
+
+                    close();
+
+                }
+
+            });
+        
+        });
+
+
+        $("#btnUpdateCategory").click(function () {
+
+
+
+
+        })
+
+
+        function clear() {
+            $('.modal').on('hidden.bs.modal', function () {
+                $(this).find('form').trigger('reset');
+            });
+        }
+
+        function close() {
+            $(".modal").modal("hide")
+            clear();
+        }
+
+
+    })
+
+    </script>
+
+}

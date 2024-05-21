@@ -1,0 +1,56 @@
+﻿@model Employee
+
+<style>
+    input:active {
+        background-color: antiquewhite;
+    }
+</style>
+<div class="container-fluid">
+    <form action="/Employee/EditEmployee" method="post">
+        <input type="hidden" name="EmployeeID" value="@Model.EmployeeID"/>
+        <div class="mb-3">
+            <label class="form-label">Personel Adı</label>
+            <input name="FirstName" type="text" class="form-control" value="@Model.FirstName">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Personel Soyadı</label>
+            <input name="LastName" type="text" class="form-control" value="@Model.LastName">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Personel Ünvan</label>
+            <input name="Title" type="text" class="form-control" value="@Model.Title">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Doğum Tarihi</label>
+            <input name="BirthDate" type="text" class="form-control" value="@Model.BirthDate.ToString()">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">İşe Başlama Tarihi</label>
+            <input name="HireDate" type="text" class="form-control" value="@Model.HireDate.ToString()">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Adres</label>
+            <input name="Address" type="text" class="form-control" value="@Model.Address">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Şehir</label>
+            <input name="City" type="text" class="form-control" value="@Model.City">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Ülke</label>
+            <input name="Country" type="text" class="form-control" value="@Model.Country">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Fotoğraf <img src="~/image/employeePhoto/@Model.PhotoPath" /></label>
+            <input name="PhotoPath" type="text" class="form-control" value="@Model.PhotoPath.ToString()">
+        </div>
+        <button type="submit" class="btn btn-success">Kaydet</button>
+    </form>
+</div>
+
+
+
+
+
+
+

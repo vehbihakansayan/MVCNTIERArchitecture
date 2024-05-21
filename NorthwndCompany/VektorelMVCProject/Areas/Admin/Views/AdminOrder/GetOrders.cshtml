@@ -1,0 +1,520 @@
+﻿@using NorthwndCompany.VektorelMVCProject.Areas.Admin.Models
+@model AddOrderDto
+
+@{
+    Layout = "/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div>
+    <table id="tblOrders" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Sipariş No</th>
+                <th>Sipariş Tarihi</th>
+                <th>Kargo Firması</th>
+                <th>Kargo Ücreti</th>
+                <th>Şehir</th>
+                <th>Ülke</th>
+                <th>Sil</th>
+                <th>Güncelle</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Orders)
+            {
+                <tr>
+                    <td id="tdOrderId">@item.OrderID</td>
+                    <td id="tdOrderDate">@item.OrderDate.ToShortDateString()</td>
+                    <td id="tdShipName">@item.ShipName</td>
+                    <td id="tdFreight">@item.Freight</td>
+                    <td id="tdShipCity">@item.ShipCity</td>
+                    <td id="tdShipCountry">@item.ShipCountry</td>
+                    <td><button id="btnDelete" class="btn btn-danger">Sil</button></td>
+                    <td><button id="btnUpdate" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateOrder">Güncelle</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#addOrder">Yeni Sipariş Ekle</button>
+<div class="modal fade" id="addOrder" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Yeni Sipariş Ekleme Formu</h5>
+                <button id="btnx" type="button" class="btn-close Close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formOrder" class="row g-3 needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="addOrder01" class="form-label">Müşteri Bilgileri</label>
+                        <select name="CustomerID" class="form-select" id="addOrder01" required>
+                            <option selected disabled value="">Müşteri Seçiniz</option>
+                            @foreach (var item in Model.Customers)
+                            {
+                                <option value="@item.CustomerID">@item.ContactName</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">
+                            Lütfen bir müşteri seçiniz.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addOrder02" class="form-label">Satış Danışmanı</label>
+                        <select name="EmployeeID" class="form-select" id="addOrder02" required>
+                            <option selected disabled value="">Satış Danışmanı Seçiniz</option>
+                            @foreach (var item in Model.Employees)
+                            {
+                                <option value="@item.EmployeeID">@item.FirstName @item.LastName</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">
+                            Lütfen bir satış danışmanı seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="addOrder03" class="form-label">Kargo Firması</label>
+                        <input name="ShipName" type="text" class="form-control" id="addOrder03" placeholder="Kargo Firması" required>
+                        <div class="invalid-feedback">
+                            Lütfen kargo firması seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="addOrder04" class="form-label">Soyadı</label>
+                        <input name="Freight" type="number" step=".01" class="form-control" id="addOrder04" placeholder="Kargo Ücreti" required>
+                        <div class="invalid-feedback">
+                            Lütfen kargo ücretini yazınız.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="addOrder05" class="form-label">Ülke</label>
+                        <input name="ShipCountry" type="text" class="form-control" id="addOrder05" placeholder="Ülke" required />
+                        <div class="invalid-feedback">
+                            Lütfen bir ülke seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="addOrder06" class="form-label">Şehir</label>
+                        <input name="ShipCity" type="text" class="form-control" id="addOrder06" placeholder="Şehir" required>
+                        <div class="invalid-feedback">
+                            Lütfen bir şehir seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="addOrder07" class="form-label">Sipariş Tarihi</label>
+                        <input name="OrderDate" type="date" class="form-control" id="addOrder07" placeholder="Sipariş Tarihi" required>
+                        <div class="invalid-feedback">
+                            Lütfen sipariş tarihini seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                            <label class="form-check-label" for="invalidCheck">
+                                Koşulları okudum ve kabul ediyorum.
+                            </label>
+                            <div class="invalid-feedback">
+                                Onaylamadan önce koşulları kabul etmeniz gerekir.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary Close" data-bs-dismiss="modal">Kapat</button>
+                            <button id="submitButton" class="btn btn-primary" type="submit">Kaydet</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="updateOrder" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sipariş Güncelleme Formu</h5>
+                <button id="btnx" type="button" class="btn-close CloseUpdate" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formUpdateOrder" class="row g-3 needs-validation updateForm" novalidate>
+                    <div class="mb-3">
+                        <label for="updateOrder01" class="form-label">Müşteri Bilgileri</label>
+                        <select name="CustomerID" class="form-select" id="updateOrder01" required>
+                            <option selected disabled value="">Müşteri Seçiniz</option>
+                            @foreach (var item in Model.Customers)
+                            {
+                                <option value="@item.CustomerID">@item.ContactName</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">
+                            Lütfen bir müşteri seçiniz.
+                        </div>
+                    </div>
+                    <input name="OrderID" type="hidden" class="form-control" id="updateForOrderID" />
+                    <div class="mb-3">
+                        <label for="updateOrder02" class="form-label">Satış Danışmanı</label>
+                        <select name="EmployeeID" class="form-select" id="updateOrder02" required>
+                            <option selected disabled value="">Satış Danışmanı Seçiniz</option>
+                            @foreach (var item in Model.Employees)
+                            {
+                                <option value="@item.EmployeeID">@item.FirstName @item.LastName</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">
+                            Lütfen bir satış danışmanı seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="updateOrder03" class="form-label">Kargo Firması</label>
+                        <input name="ShipName" type="text" class="form-control" id="updateOrder03" placeholder="Kargo Firması" required>
+                        <div class="invalid-feedback">
+                            Lütfen kargo firması seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="updateOrder04" class="form-label">Kargo Ücreti</label>
+                        <input name="Freight" type="number" step=".01" class="form-control" id="updateOrder04" placeholder="Kargo Ücreti" required>
+                        <div class="invalid-feedback">
+                            Lütfen kargo ücretini yazınız.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="updateOrder05" class="form-label">Ülke</label>
+                        <input name="ShipCountry" type="text" class="form-control" id="updateOrder05" placeholder="Ülke" required />
+                        <div class="invalid-feedback">
+                            Lütfen bir ülke seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="updateOrder06" class="form-label">Şehir</label>
+                        <input name="ShipCity" type="text" class="form-control" id="updateOrder06" placeholder="Şehir" required>
+                        <div class="invalid-feedback">
+                            Lütfen bir şehir seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="updateOrder07" class="form-label">Sipariş Tarihi</label>
+                        <input name="OrderDate" type="date" class="form-control" id="updateOrder07" placeholder="Sipariş Tarihi" required>
+                        <div class="invalid-feedback">
+                            Lütfen sipariş tarihini seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                            <label class="form-check-label" for="invalidCheck">
+                                Koşulları okudum ve kabul ediyorum.
+                            </label>
+                            <div class="invalid-feedback">
+                                Onaylamadan önce koşulları kabul etmeniz gerekir.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary CloseUpdate" data-bs-dismiss="modal">Kapat</button>
+                            <button id="updateOrderButton" class="btn btn-primary" type="submit">Kaydet</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section OrderScript{
+
+    <script>
+        $(document).ready(function () {
+
+            $("#tblOrders").DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/tr.json"
+                },
+            });
+
+            $("#submitButton").click(function () {
+
+                //Fetch form to apply custom Bootstrap validation
+                var form = $("#formOrder")
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.addClass('was-validated');
+            });
+
+            $(".Close").each(function () {
+                $(this).click(function () {
+                    clear();
+                });
+            })
+
+            function clear() {
+                $('#addOrder').on('hidden.bs.modal', function () {
+                    $(this).find('form').trigger('reset');
+                    $("#formOrder").removeClass('was-validated');
+                });
+            }
+
+            $('#formOrder').submit(function (e) {
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '/Admin/AdminOrder/AddOrder',
+                    type: "post",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.result) {
+
+                            var table = $("#tblOrders").DataTable();
+                            table.row.add([response.neworder.orderID, response.neworder.orderDate, response.neworder.shipName, response.neworder.freight, response.neworder.shipCity, response.neworder.shipCountry, '<button id="btnDelete" class="btn btn-danger">Sil</button>', '<button id="btnUpdate" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#divUpdateEmployee">Güncelle</button>']).draw(false);
+
+                            Command: toastr["success"](response.message)
+                            toastr.options = {
+                                "closeButton": true,
+                                "debug": false,
+                                "newestOnTop": false,
+                                "progressBar": false,
+                                "positionClass": "toast-top-right",
+                                "preventDuplicates": false,
+                                "onclick": null,
+                                "showDuration": "300",
+                                "hideDuration": "1000",
+                                "timeOut": "5000",
+                                "extendedTimeOut": "1000",
+                                "showEasing": "swing",
+                                "hideEasing": "linear",
+                                "showMethod": "fadeIn",
+                                "hideMethod": "fadeOut"
+
+                            }
+
+                            $('#addOrder').modal("hide");
+                            clear();
+
+                        } else {
+
+                            Command: toastr["error"](response.message);
+
+                            toastr.options = {
+                                "closeButton": true,
+                                "debug": false,
+                                "newestOnTop": false,
+                                "progressBar": false,
+                                "positionClass": "toast-top-right",
+                                "preventDuplicates": false,
+                                "onclick": null,
+                                "showDuration": "300",
+                                "hideDuration": "1000",
+                                "timeOut": "5000",
+                                "extendedTimeOut": "1000",
+                                "showEasing": "swing",
+                                "hideEasing": "linear",
+                                "showMethod": "fadeIn",
+                                "hideMethod": "fadeOut"
+                            }
+                            $('#addOrder').modal("hide");
+                            clear();
+                        }
+                    },
+                });
+                e.preventDefault();
+            });
+
+            $("#updateOrderButton").click(function () {
+
+                //Fetch form to apply custom Bootstrap validation
+                var form = $("#formUpdateOrder")
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.addClass('was-validated');
+            });
+
+            $("#tblOrders").on("click", "#btnUpdate", function () {
+
+                var row = $(this).closest('tr');
+                var orderId = row.find("#tdOrderId").text();
+
+                $.ajax({
+                    url: "/Admin/AdminOrder/GetOrderById",
+                    method: "get",
+                    dataType: "json",
+                    data: { id: orderId },
+                    success: function (response) {
+                        $("#updateOrder01").val(response.updateorder.customerID);
+                        $("#updateOrder02").val(response.updateorder.employeeID);
+                        $("#updateOrder03").val(response.updateorder.shipName);
+                        $("#updateOrder04").val(response.updateorder.freight);
+                        $("#updateOrder05").val(response.updateorder.shipCountry);
+                        $("#updateOrder06").val(response.updateorder.shipCity);
+                        $("#updateOrder07").val(response.orderdate);
+                    }
+                });
+
+                $("#formUpdateOrder").submit(function () {
+
+                    $("#updateForOrderID").val(orderId)
+                    var formDataUpdate = new FormData(this);
+
+                    $.ajax({
+                        url: "/Admin/AdminOrder/UpdateOrder",
+                        method: "post",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: formDataUpdate,
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            if (response.result) {                                
+                                row.find("#tdOrderDate").text(response.odt);
+                                row.find("#tdShipName").text(response.updateOrder.shipName);
+                                row.find("#tdFreight").text(response.updateOrder.freight);
+                                row.find("#tdShipCity").text(response.updateOrder.shipCity);
+                                row.find("#tdShipCountry").text(response.updateOrder.shipCountry);
+
+                                Command: toastr["success"](response.message)
+                                toastr.options = {
+                                    "closeButton": true,
+                                    "debug": false,
+                                    "newestOnTop": false,
+                                    "progressBar": false,
+                                    "positionClass": "toast-top-right",
+                                    "preventDuplicates": false,
+                                    "onclick": null,
+                                    "showDuration": "300",
+                                    "hideDuration": "1000",
+                                    "timeOut": "5000",
+                                    "extendedTimeOut": "1000",
+                                    "showEasing": "swing",
+                                    "hideEasing": "linear",
+                                    "showMethod": "fadeIn",
+                                    "hideMethod": "fadeOut"
+                                }
+
+                                $('#updateOrder').modal("hide");
+                                
+                            } else {
+                                Command: toastr["error"](response.message);
+
+                                toastr.options = {
+                                    "closeButton": true,
+                                    "debug": false,
+                                    "newestOnTop": false,
+                                    "progressBar": false,
+                                    "positionClass": "toast-top-right",
+                                    "preventDuplicates": false,
+                                    "onclick": null,
+                                    "showDuration": "300",
+                                    "hideDuration": "1000",
+                                    "timeOut": "5000",
+                                    "extendedTimeOut": "1000",
+                                    "showEasing": "swing",
+                                    "hideEasing": "linear",
+                                    "showMethod": "fadeIn",
+                                    "hideMethod": "fadeOut"
+                                }
+                            }
+                        }
+
+
+                    })
+
+                });
+
+            });
+
+            $(".CloseUpdate").click(function () {
+                $('#updateOrder').on('hidden.bs.modal', function () {
+                    $("#formUpdateOrder").removeClass('was-validated');
+                });
+            });
+
+            $("#tblOrders").on("click", "#btnDelete", function () {
+                Swal.fire({
+                    title: 'Siparişi silmek istediğinize emin misiniz?',
+                    showDenyButton: true,
+                    showCancelButton: false,
+                    confirmButtonText: 'Sil',
+                    denyButtonText: `İptal`,
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        var row = $(this).closest("tr");
+                        var orderId = row.find("#tdOrderId").text();
+                        $.ajax({
+                            url: "/Admin/AdminOrder/DeleteOrder",
+                            method: "delete",
+                            dataType: "json",
+                            data: { id: orderId },
+                            success: function (response) {
+                                if (response.result) {
+                                    row.remove();
+                                    Command: toastr["success"](response.message)
+
+                                    toastr.options = {
+                                        "closeButton": true,
+                                        "debug": false,
+                                        "newestOnTop": false,
+                                        "progressBar": false,
+                                        "positionClass": "toast-top-right",
+                                        "preventDuplicates": false,
+                                        "onclick": null,
+                                        "showDuration": "300",
+                                        "hideDuration": "1000",
+                                        "timeOut": "5000",
+                                        "extendedTimeOut": "1000",
+                                        "showEasing": "swing",
+                                        "hideEasing": "linear",
+                                        "showMethod": "fadeIn",
+                                        "hideMethod": "fadeOut"
+                                    }
+                                } else {
+                                    Command: toastr["error"](response.message);
+
+                                    toastr.options = {
+                                        "closeButton": true,
+                                        "debug": false,
+                                        "newestOnTop": false,
+                                        "progressBar": false,
+                                        "positionClass": "toast-top-right",
+                                        "preventDuplicates": false,
+                                        "onclick": null,
+                                        "showDuration": "300",
+                                        "hideDuration": "1000",
+                                        "timeOut": "5000",
+                                        "extendedTimeOut": "1000",
+                                        "showEasing": "swing",
+                                        "hideEasing": "linear",
+                                        "showMethod": "fadeIn",
+                                        "hideMethod": "fadeOut"
+                                    }
+                                }
+                            }
+                        });
+                    };
+                });
+            });
+
+
+
+        });
+
+
+
+    </script>
+
+}
+
+

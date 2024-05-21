@@ -1,0 +1,267 @@
+﻿@model CountriesForEmployee
+
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="form-element-list">
+        <form id="signup-form" class="row g-3 needs-validation" novalidate>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="validationCustom01" class="form-label">Adı</label>
+                    <input type="text" class="form-control" id="validationCustom01" placeholder="Ad" required>
+                    <div class="invalid-feedback">
+                        Lütfen adınızı yazınız.
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="validationCustom02" class="form-label">Soyadı</label>
+                    <input type="text" class="form-control" id="validationCustom02" placeholder="Soyad" required>
+                    <div class="invalid-feedback">
+                        Lütfen soyadınızı yazınız.
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="validationCustom03" class="form-label">İş Tanımı</label>
+                    <input type="text" class="form-control" id="validationCustom03" placeholder="Ünvan" required>
+                    <div class="invalid-feedback">
+                        Lütfen bir iş tanımı seçiniz.
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="validationCustom04" class="form-label">E-Mail</label>
+                    <input type="email" class="form-control" id="validationCustom04" placeholder="email" required />
+                    <div class="invalid-feedback">
+                        Lütfen bir e-mail adresi seçiniz.
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="validationCustom05" class="form-label">Doğum Tarihi</label>
+                    <input type="date" class="form-control" id="validationCustom05" required />
+                    <div class="invalid-feedback">
+                        Lütfen bir tarih seçiniz.
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="validationCustom06" class="form-label">İşe Giriş Tarihi</label>
+                    <input type="date" class="form-control" id="validationCustom06" required />
+                    <div class="invalid-feedback">
+                        Lütfen bir tarih seçiniz.
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="validationCustom07" class="form-label">Yönetici</label>
+                    <select class="form-control" id="validationCustom07" required>
+                        <option selected disabled value="">Yönetici Seçiniz</option>
+                        @foreach (var item in Model.Employees)
+                        {
+                            <option value="@item.EmployeeID">@item.FirstName @item.LastName</option>
+                        }
+                    </select>
+                    <div class="invalid-feedback">
+                        Lütfen bir yönetici seçiniz.
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="validationCustom08" class="form-label">Ülke</label>
+                    <select class="form-control" id="validationCustom08" required>
+                        <option selected value="">Ülke Seçiniz</option>
+                        @foreach (var item in Model.Countries)
+                        {
+                            <option value="@item.CountryId">@item.CountryName</option>
+                        }
+                    </select>
+                    <div class="invalid-feedback">
+                        Lütfen bir ülke seçiniz.
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="validationCustom09" class="form-label">Şehir</label>
+                    <select class="form-control" id="validationCustom09" required disabled>
+                        <option selected disabled value="">Önce Ülke Seçiniz</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Lütfen bir şehir seçiniz.
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="validationCustom10" class="form-label">Fotoğraf</label>
+                    <input type="file" class="form-control" id="validationCustom10" aria-label="file example" required>
+                    <div class="invalid-feedback">Lütfen bir resim dosyası seçiniz</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="validationCustomUsername" class="form-label">Kullanıcı Adı</label>
+                    <div class="input-group has-validation">
+                        <input type="text" class="form-control" id="validationCustomUsername" placeholder="Kullanıcı Adı" aria-describedby="inputGroupPrepend" required>
+                        <div class="invalid-feedback">
+                            Lütfen bir kullanıcı adı seçiniz.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label">Şifre</label>
+                    <input type="password" class="form-control" id="validationCustom11" placeholder="Şifre" required />
+                    <div class="invalid-feedback">
+                        Lütfen bir şifre belirleyiniz.
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                    <label class="form-check-label" for="invalidCheck">
+                        Koşulları okudum ve kabul ediyorum.
+                    </label>
+                    <div class="invalid-feedback">
+                        Onaylamadan önce koşulları kabul etmeniz gerekir.
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                    <button id="submitButton" class="btn btn-primary" type="button">Kaydet</button>
+                </div>
+
+        </form>
+    </div>
+</div>
+
+
+
+
+@section AddEmployee{
+
+    <script>
+        $(document).ready(function () {
+
+            $("#submitButton").click(function () {
+
+                    var fname = $("#validationCustom01").val();
+                    var lname = $("#validationCustom02").val();
+                    var title = $("#validationCustom03").val();
+                    var email = $("#validationCustom04").val();
+                    var birthdate = $("#validationCustom05").val();
+                    var hiredate = $("#validationCustom06").val();
+                    var manager = $("#validationCustom07").val();
+                    var country = $("#validationCustom08").val();
+                    var city = $("#validationCustom09").val();
+                    var photo = $("#validationCustom10").get(0).files[0];
+                    var uname = $("#validationCustomUsername").val();
+                    var password = $("#validationCustom11").val();
+
+                    var formData = new FormData();
+                    formData.append("FirstName", fname);
+                    formData.append("LastName", lname);
+                    formData.append("Title", title);
+                    formData.append("BirthDate", birthdate);
+                    formData.append("HireDate", hiredate);
+                    formData.append("ReportsTo", manager);
+                    formData.append("CountryId", country);
+                    formData.append("CityId", city);
+                    formData.append("EmployeeImage", photo);
+                    formData.append("UserName", uname);
+                    formData.append("Email", email);
+                    formData.append("Password", password);
+
+                    $.ajax({
+                        url: "/Employee/AddEmployee",
+                        method: "post",
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (response) {
+                            if (response.result) {
+                                Command: toastr["success"](response.message)
+
+                                toastr.options = {
+                                    "closeButton": true,
+                                    "debug": false,
+                                    "newestOnTop": false,
+                                    "progressBar": false,
+                                    "positionClass": "toast-top-right",
+                                    "preventDuplicates": false,
+                                    "onclick": null,
+                                    "showDuration": "300",
+                                    "hideDuration": "1000",
+                                    "timeOut": "5000",
+                                    "extendedTimeOut": "1000",
+                                    "showEasing": "swing",
+                                    "hideEasing": "linear",
+                                    "showMethod": "fadeIn",
+                                    "hideMethod": "fadeOut"
+                                }
+
+                                window.location.href="/Employee/GetAllEmployees"
+
+                            } else {
+
+                                var rp = response.message.errors
+                                for (var i = 0; i < rp.length; i++) {
+                                    Command: toastr["error"](rp[i].message);
+
+                                    toastr.options = {
+                                        "closeButton": true,
+                                        "debug": false,
+                                        "newestOnTop": false,
+                                        "progressBar": false,
+                                        "positionClass": "toast-top-right",
+                                        "preventDuplicates": false,
+                                        "onclick": null,
+                                        "showDuration": "300",
+                                        "hideDuration": "1000",
+                                        "timeOut": "5000",
+                                        "extendedTimeOut": "1000",
+                                        "showEasing": "swing",
+                                        "hideEasing": "linear",
+                                        "showMethod": "fadeIn",
+                                        "hideMethod": "fadeOut"
+                                    }
+                                }
+                            }
+                        }
+                    });
+            });
+
+
+            $("#validationCustom08").change(function () {
+                var countryId = $("#validationCustom08").val();
+                if (countryId != "") {
+                    $.ajax({
+
+                        url: "/Employee/GetCitiesByCountry",
+                        method: "get",
+                        dataType: "json",
+                        data: { countryId: countryId },
+                        success: function (response) {
+                            if (response.result) {
+                                $("#validationCustom09").empty();
+                                $("#validationCustom09").append("<option value=''>Bir şehir seçiniz</option>")
+
+                                for (var i = 0; i < response.cities.length; i++) {
+                                    $("#validationCustom09").append("<option value='" + response.cities[i].cityId + "'>" + response.cities[i].cityName + "</option>");
+                                }
+                                $("#validationCustom09").removeAttr("disabled");
+                            }
+                        }
+                    });
+
+                } else {
+                    $("#validationCustom09").empty();
+                    $("#validationCustom09").append("<option value=''>Önce Ülke Seçiniz</option>");
+                    $("#validationCustom09").prop("disabled", true);
+                }
+            });
+        });
+    </script>
+
+
+}
+
+
+

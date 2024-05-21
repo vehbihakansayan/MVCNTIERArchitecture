@@ -1,0 +1,408 @@
+﻿@using NorthwndCompany.VektorelMVCProject.Models.Entities
+@model List<Category>
+
+@{
+    Layout = "/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section categoryCSS{
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+}
+
+
+<div>
+    <table id="tblCategories" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Kategori Resim</th>
+                <th>Kategori No</th>
+                <th>Kategori Adı</th>
+                <th>Kategori Açıklama</th>
+                <th>Kategori Sil</th>
+                <th>Kategori Güncelle</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td id="tdPhoto">
+                        @{
+                            if (item.CategoryID < 9)
+                            {
+                                <img src="@("data:image/png;base64," + item.Base64Photo)" />
+                            }
+                            else if (item.CategoryID >= 9)
+                            {
+                                <img src="~/image/categoryPhoto/@item.categoryPhoto" />
+                            }
+                        }
+                    </td>
+                    <td id="tdDelete">@item.CategoryID</td>
+                    <td id="tdCName">@item.CategoryName</td>
+                    <td id="tdDesc">@item.Description</td>
+                    <td><button id="btnDelete" class="btn btn-danger">Sil</button></td>
+                    <td>
+                        <button id="btnUpdate" class="btn btn-primary">Güncelle</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button id="btnAddCategory" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddCategory">Kategori Ekle</button>
+</div>
+
+
+<div class="modal fade" id="modalAddCategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Kategori Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formNewCategory">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Kategori Adı</label>
+                        <input id="txtCname" name="categoryName" type="text" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Açıklama</label>
+                        <textarea id="txtDesc" name="description" class="form-control"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Fotoğraf</label>
+                        <input id="categoryFilePhoto" name="categoryFilePhoto" type="file" class="form-control" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                <button id="btnSaveNewCtg" type="button" class="btn btn-primary">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalUpdateCategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Kategori Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formUpdateCategory">
+                    <div class="mb-3">
+                        <input id="updateCid" name="categoryID" type="hidden">
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Kategori Adı</label>
+                        <input id="updateCname" name="categoryName" type="text" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Açıklama</label>
+                        <textarea id="updateDesc" name="description" class="form-control"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Fotoğraf</label>
+                        <input id="updateFilePhoto" name="categoryFilePhoto" type="file" class="form-control" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                <button id="btnSaveUpdateCtg" type="button" class="btn btn-primary">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section categoryScript{
+    <script>
+
+        $(document).ready(function () {
+            $('#tblCategories').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/tr.json"
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            }); //datatable
+
+            $("#tblCategories").on("click", "#btnDelete", function () {
+
+                Swal.fire({
+                    title: 'Kategoriyi silmek istediğinize emin misiniz?',
+                    showDenyButton: true,
+                    showCancelButton: false,
+                    confirmButtonText: 'Sil',
+                    denyButtonText: `İptal`,
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        var row = $(this).closest("tr");
+                        var categoryId = row.find("#tdDelete").html();
+                        $(this).closest("tr").remove();
+                        $.ajax({
+                            url: "/Admin/AdminCategory/RemoveCategory",
+                            method: "delete",
+                            dataType: "json",
+                            data: { id: categoryId },
+                            success: function (response) {
+                                if (response.result)
+                                    /*Swal.fire('Kategori Silindi', '', 'success')*/
+                                    Command: toastr["success"](categoryId + " numaralı kategori başarıyla silinmiştir!")
+
+                                toastr.options = {
+                                    "closeButton": true,
+                                    "debug": false,
+                                    "newestOnTop": false,
+                                    "progressBar": false,
+                                    "positionClass": "toast-top-right",
+                                    "preventDuplicates": false,
+                                    "onclick": null,
+                                    "showDuration": "300",
+                                    "hideDuration": "1000",
+                                    "timeOut": "5000",
+                                    "extendedTimeOut": "1000",
+                                    "showEasing": "swing",
+                                    "hideEasing": "linear",
+                                    "showMethod": "fadeIn",
+                                    "hideMethod": "fadeOut"
+                                }
+                            },
+                        });
+                    };
+                });
+            });
+
+            $("#btnSaveNewCtg").click(function () {
+
+                $("#formNewCategory").validate({
+
+                    rules: {
+                        categoryName: {
+                            required: true,
+                            minlength: 3
+                        },
+                        description: {
+                            required: true,
+                            minlength: 3
+                        }
+                    },
+                    messages: {
+                        categoryName: {
+                            required: "Kategori adı boş bırakılamaz!",
+                            minlength: "Kategori adı minimum üç karakter olmalıdır!"
+                        },
+                        description: {
+                            required: "Kategori açıklaması boş bırakılamaz!",
+                            minlength: "Kategori açıklaması minimum üç karakter olmalıdır!"
+                        }
+                    },
+                });
+
+                if ($("#formNewCategory").valid()) {
+
+                    var cName = $("#txtCname").val();
+                    var desc = $("#txtDesc").val();
+                    var file = $("#categoryFilePhoto").get(0).files[0];
+
+                    var formData = new FormData();
+                    formData.append("categoryFilePhoto", file);
+                    formData.append("CategoryName", cName);
+                    formData.append("Description", desc);
+
+                    $.ajax({
+                        url: "/Admin/AdminCategory/AddCategory",
+                        method: "post",
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (response) {
+                            if (response.result) {
+                                var tr = `<tr class="even">
+                                                     <td class="sorting_1">
+                                                     <img src="/image/categoryPhoto/`+ response.newCategory.categoryPhoto + `">
+                                                     </td>
+                                                     <td>` + response.newCategory.categoryID + `</td>
+                                                     <td>` + response.newCategory.categoryName + `</td>
+                                                     <td>` + response.newCategory.description + `</td>
+                                                     <td id="categoryId"><button id="btnDelete" class="btn btn-danger">Sil</button></td>
+                                                     <td><button class="btn btn-primary">Güncelle</button></td>
+                                                     </tr>`
+                                $("#tblCategories tbody").append(tr);
+
+                                Command: toastr["success"](response.message)
+
+                                toastr.options = {
+                                    "closeButton": true,
+                                    "debug": false,
+                                    "newestOnTop": false,
+                                    "progressBar": false,
+                                    "positionClass": "toast-top-right",
+                                    "preventDuplicates": false,
+                                    "onclick": null,
+                                    "showDuration": "300",
+                                    "hideDuration": "1000",
+                                    "timeOut": "5000",
+                                    "extendedTimeOut": "1000",
+                                    "showEasing": "swing",
+                                    "hideEasing": "linear",
+                                    "showMethod": "fadeIn",
+                                    "hideMethod": "fadeOut"
+                                }
+                                $("#modalAddCategory").modal("hide");
+                                clear();
+                            }
+
+                            else {
+                                var rp = response.message.errors
+                                for (var i = 0; i < rp.length; i++) {
+                                    Command: toastr["error"](rp[i].message);
+                                }
+                                toastr.options = {
+                                    "closeButton": true,
+                                    "debug": false,
+                                    "newestOnTop": false,
+                                    "progressBar": false,
+                                    "positionClass": "toast-top-right",
+                                    "preventDuplicates": false,
+                                    "onclick": null,
+                                    "showDuration": "300",
+                                    "hideDuration": "1000",
+                                    "timeOut": "5000",
+                                    "extendedTimeOut": "1000",
+                                    "showEasing": "swing",
+                                    "hideEasing": "linear",
+                                    "showMethod": "fadeIn",
+                                    "hideMethod": "fadeOut"
+                                }
+                            }
+
+                            clear();
+                        }
+                    });
+                }
+            });
+
+
+            function clear() {
+                $('.modal').on('hidden.bs.modal', function () {
+                    $(this).find('form').trigger('reset');
+                });
+            }
+
+
+            $("#tblCategories").on("click", "#btnUpdate", function () {
+
+                var row = $(this).closest("tr");
+                var id = row.find("#tdDelete").text();
+                var name = row.find("#tdCName").text();
+                var desc = row.find("#tdDesc").text();
+
+                $("#modalUpdateCategory form #updateCid").val(id);
+                $("#modalUpdateCategory form #updateCname").val(name);
+                $("#modalUpdateCategory form #updateDesc").val(desc);
+
+                $("#modalUpdateCategory").modal("show");
+
+                $("#btnSaveUpdateCtg").click(function () {
+
+                    var cId = $("#updateCid").val();
+                    var cName = $("#updateCname").val();
+                    var desc = $("#updateDesc").val();
+                    var file = $("#categoryFilePhoto").get(0).files[0];
+
+                    var formData = new FormData();
+                    formData.append("categoryFilePhoto", file);
+                    formData.append("CategoryName", cName);
+                    formData.append("Description", desc);
+                    formData.append("CategoryID", cId);
+
+                    $.ajax({
+                        url: "/Admin/AdminCategory/UpdateCategory",
+                        method: "post",
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (response) {
+                            if (response.result) {
+                                row.find("#tdCName").text(response.updateCtg.categoryName);
+                                row.find("#tdDesc").text(response.updateCtg.description);
+                                row.find("#tdPhoto").html(`<img src="/image/categoryPhoto/` + response.updateCtg.categoryPhoto + `">`);
+
+                                $("#modalUpdateCategory").modal("hide");
+
+                                Command: toastr["success"](response.message)
+
+                                toastr.options = {
+                                    "closeButton": true,
+                                    "debug": false,
+                                    "newestOnTop": false,
+                                    "progressBar": false,
+                                    "positionClass": "toast-top-right",
+                                    "preventDuplicates": false,
+                                    "onclick": null,
+                                    "showDuration": "300",
+                                    "hideDuration": "1000",
+                                    "timeOut": "5000",
+                                    "extendedTimeOut": "1000",
+                                    "showEasing": "swing",
+                                    "hideEasing": "linear",
+                                    "showMethod": "fadeIn",
+                                    "hideMethod": "fadeOut"                                   
+                                }
+                                clear();
+
+                            } else {
+
+                                $("#modalUpdateCategory").modal("hide");
+
+                                var rp = response.message.errors
+                                for (var i = 0; i < rp.length; i++) {
+                                    Command: toastr["error"](rp[i].message);
+
+                                    toastr.options = {
+                                        "closeButton": true,
+                                        "debug": false,
+                                        "newestOnTop": false,
+                                        "progressBar": false,
+                                        "positionClass": "toast-top-right",
+                                        "preventDuplicates": false,
+                                        "onclick": null,
+                                        "showDuration": "300",
+                                        "hideDuration": "1000",
+                                        "timeOut": "5000",
+                                        "extendedTimeOut": "1000",
+                                        "showEasing": "swing",
+                                        "hideEasing": "linear",
+                                        "showMethod": "fadeIn",
+                                        "hideMethod": "fadeOut"
+                                    }
+                                }
+
+                                clear();
+
+                            }
+                        }
+
+                    });
+                });
+            });
+
+        });
+
+    </script>
+
+}
+

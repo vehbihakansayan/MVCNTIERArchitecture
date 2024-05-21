@@ -1,0 +1,455 @@
+﻿@using NorthwndCompany.VektorelMVCProject.Areas.Admin.Models
+
+@model ProductWithCategories
+
+@{
+    Layout = "/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<table id="tblProducts" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Ürün No</th>
+            <th>Ürün Adı</th>
+            <th>Kategorisi</th>
+            <th>Fiyat</th>
+            <th>Stok</th>
+            <th>Sil</th>
+            <th>Güncelle</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Products)
+        {
+            <tr>
+                <td id="tdProductId">@item.ProductID</td>
+                <td id="tdProductName">@item.ProductName</td>
+                <td id="tdCategoryName">@item.Category.CategoryName</td>
+                <td id="tdUnitPrice">@item.UnitPrice</td>
+                <td id="tdUnitsInStock">@item.UnitsInStock</td>
+                <td><button id="btnDelete" class="btn btn-danger">Sil</button></td>
+                <td><button id="btnUpdate" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateProduct">Güncelle</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#addProduct">Ürün Ekle</button>
+<div class="modal fade" id="addProduct" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Yeni Ürün Ekleme Formu</h5>
+                <button id="btnx" type="button" class="btn-close Close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formProduct" class="row g-3 needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="addProduct01" class="form-label">Ürün Adı</label>
+                        <input name="ProductName" type="text" class="form-control" id="addProduct01" placeholder="Ürün Adı" required>
+                        <div class="invalid-feedback">
+                            Lütfen ürün adını yazınız.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addProduct02" class="form-label">Kateogri Bilgileri</label>
+                        <select name="CategoryID" class="form-select" id="addProduct02" required>
+                            <option selected disabled value="">Kategori Seçiniz</option>
+                            @foreach (var item in Model.Categories)
+                            {
+                                <option value="@item.CategoryID">@item.CategoryName</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">
+                            Lütfen bir kategori seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="addProduct03" class="form-label">Fiyat</label>
+                        <input name="UnitPrice" type="number" step=".01" class="form-control" id="addProduct03" placeholder="Ürün Fiyatı" required>
+                        <div class="invalid-feedback">
+                            Lütfen ürün fiyatını giriniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="addProduct04" class="form-label">Fiyat</label>
+                        <input name="UnitsInStock" type="number" class="form-control" id="addProduct04" placeholder="Stok Adeti" required>
+                        <div class="invalid-feedback">
+                            Lütfen stok adetini giriniz.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                            <label class="form-check-label" for="invalidCheck">
+                                Koşulları okudum ve kabul ediyorum.
+                            </label>
+                            <div class="invalid-feedback">
+                                Onaylamadan önce koşulları kabul etmeniz gerekir.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary Close" data-bs-dismiss="modal">Kapat</button>
+                            <button id="btnAddProduct" class="btn btn-primary" type="submit">Kaydet</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="updateProduct" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ürün Güncelleme Formu</h5>
+                <button id="btnx" type="button" class="btn-close updateClose" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formUpdateProduct" class="row g-3 needs-validation" novalidate>
+                    <div><input id="updateProduct00" type="hidden" name="ProductID" /></div>
+                    <div class="mb-3">
+                        <label for="updateProduct01" class="form-label">Ürün Adı</label>
+                        <input name="ProductName" type="text" class="form-control" id="updateProduct01" placeholder="Ürün Adı" required>
+                        <div class="invalid-feedback">
+                            Lütfen ürün adını yazınız.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateProduct02" class="form-label">Kateogri Bilgileri</label>
+                        <select name="CategoryID" class="form-select" id="updateProduct02" required>
+                            <option selected disabled value="">Kategori Seçiniz</option>
+                            @foreach (var item in Model.Categories)
+                            {
+                                <option value="@item.CategoryID">@item.CategoryName</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">
+                            Lütfen bir kategori seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="updateProduct03" class="form-label">Fiyat</label>
+                        <input name="UnitPrice" type="number" step=".01" class="form-control" id="updateProduct03" placeholder="Ürün Fiyatı" required>
+                        <div class="invalid-feedback">
+                            Lütfen ürün fiyatını giriniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="updateProduct04" class="form-label">Fiyat</label>
+                        <input name="UnitsInStock" type="number" class="form-control" id="updateProduct04" placeholder="Stok Adeti" required>
+                        <div class="invalid-feedback">
+                            Lütfen stok adetini giriniz.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                            <label class="form-check-label" for="invalidCheck">
+                                Koşulları okudum ve kabul ediyorum.
+                            </label>
+                            <div class="invalid-feedback">
+                                Onaylamadan önce koşulları kabul etmeniz gerekir.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary updateClose" data-bs-dismiss="modal">Kapat</button>
+                            <button id="btnUpdateProduct" class="btn btn-primary" type="submit">Kaydet</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section productScript{
+
+    <script>
+
+        $(document).ready(function () {
+
+            $("#tblProducts").DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/tr.json"
+                },
+            });
+
+
+            $("#btnAddProduct").click(function () {
+                var form = $("#formProduct")
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.addClass('was-validated');
+            });
+
+
+            $(".Close").click(function () {
+                clear();
+            });
+
+            function clear() {
+                $('#addProduct').on('hidden.bs.modal', function () {
+                    $(this).find('form').trigger('reset');
+                    $("#formProduct").removeClass('was-validated');
+                });
+            }
+
+            $('#formProduct').submit(function (e) {
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '/Admin/AdminProduct/AddOrEdit',
+                    type: "post",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.result) {
+
+                            var table = $("#tblProducts").DataTable();
+                            table.row.add([response.newproduct.productID, response.newproduct.productName, response.newproduct.category.categoryName, response.newproduct.unitPrice, response.newproduct.unitsInStock, '<button id="btnDelete" class="btn btn-danger">Sil</button>', '<button id="btnUpdate" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateProduct">Güncelle</button>']).draw(false);
+
+                            Command: toastr["success"](response.message)
+                            toastr.options = {
+                                "closeButton": true,
+                                "debug": false,
+                                "newestOnTop": false,
+                                "progressBar": false,
+                                "positionClass": "toast-top-right",
+                                "preventDuplicates": false,
+                                "onclick": null,
+                                "showDuration": "300",
+                                "hideDuration": "1000",
+                                "timeOut": "5000",
+                                "extendedTimeOut": "1000",
+                                "showEasing": "swing",
+                                "hideEasing": "linear",
+                                "showMethod": "fadeIn",
+                                "hideMethod": "fadeOut"
+
+                            }
+
+                            $('#addProduct').modal("hide");
+                            clear();
+
+                        } else {
+
+                            Command: toastr["error"](response.message);
+
+                            toastr.options = {
+                                "closeButton": true,
+                                "debug": false,
+                                "newestOnTop": false,
+                                "progressBar": false,
+                                "positionClass": "toast-top-right",
+                                "preventDuplicates": false,
+                                "onclick": null,
+                                "showDuration": "300",
+                                "hideDuration": "1000",
+                                "timeOut": "5000",
+                                "extendedTimeOut": "1000",
+                                "showEasing": "swing",
+                                "hideEasing": "linear",
+                                "showMethod": "fadeIn",
+                                "hideMethod": "fadeOut"
+                            }
+                            $('#addProduct').modal("hide");
+                            clear();
+                        }
+                    },
+                });
+                e.preventDefault();
+            });
+
+            $("#tblProducts").on("click", "#btnDelete", function () {
+                Swal.fire({
+                    title: 'Ürünü silmek istediğinize emin misiniz?',
+                    showDenyButton: true,
+                    showCancelButton: false,
+                    confirmButtonText: 'Sil',
+                    denyButtonText: `İptal`,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var row = $(this).closest("tr");
+                        var productId = row.find("#tdProductId").text();
+                        $.ajax({
+                            url: "/Admin/AdminProduct/Delete",
+                            method: "delete",
+                            dataType: "json",
+                            data: { id: productId },
+                            success: function (response) {
+                                if (response.result) {
+                                    row.remove();
+                                    Command: toastr["success"](response.message)
+
+                                    toastr.options = {
+                                        "closeButton": true,
+                                        "debug": false,
+                                        "newestOnTop": false,
+                                        "progressBar": false,
+                                        "positionClass": "toast-top-right",
+                                        "preventDuplicates": false,
+                                        "onclick": null,
+                                        "showDuration": "300",
+                                        "hideDuration": "1000",
+                                        "timeOut": "5000",
+                                        "extendedTimeOut": "1000",
+                                        "showEasing": "swing",
+                                        "hideEasing": "linear",
+                                        "showMethod": "fadeIn",
+                                        "hideMethod": "fadeOut"
+                                    }
+                                } else {
+                                    Command: toastr["error"](response.message);
+
+                                    toastr.options = {
+                                        "closeButton": true,
+                                        "debug": false,
+                                        "newestOnTop": false,
+                                        "progressBar": false,
+                                        "positionClass": "toast-top-right",
+                                        "preventDuplicates": false,
+                                        "onclick": null,
+                                        "showDuration": "300",
+                                        "hideDuration": "1000",
+                                        "timeOut": "5000",
+                                        "extendedTimeOut": "1000",
+                                        "showEasing": "swing",
+                                        "hideEasing": "linear",
+                                        "showMethod": "fadeIn",
+                                        "hideMethod": "fadeOut"
+                                    }
+                                }
+                            }
+                        });
+                    };
+                });
+            });
+
+            $("#btnUpdateProduct").click(function () {
+
+                //Fetch form to apply custom Bootstrap validation
+                var form = $("#formUpdateProduct")
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.addClass('was-validated');
+            });
+
+            $(".updateClose").click(function () {
+                $("#formUpdateProduct").removeClass('was-validated')
+            });
+
+            $("#tblProducts").on("click", "#btnUpdate", function () {
+
+                var row = $(this).closest('tr');
+                var productId = row.find("#tdProductId").text();
+
+                $.ajax({
+                    url: "/Admin/AdminProduct/GetProductById",
+                    method: "get",
+                    dataType: "json",
+                    data: { id: productId },
+                    success: function (response) {
+                        $("#updateProduct00").val(response.updateproduct.productID);
+                        $("#updateProduct01").val(response.updateproduct.productName);
+                        $("#updateProduct02").val(response.updateproduct.categoryID);
+                        $("#updateProduct03").val(response.updateproduct.unitPrice);
+                        $("#updateProduct04").val(response.updateproduct.unitsInStock)
+                    }
+                });
+
+                $("#formUpdateProduct").submit(function () {
+
+                    var formDataUpdate = new FormData(this);
+
+                    $.ajax({
+                        url: "/Admin/AdminProduct/AddOrEdit",
+                        method: "post",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: formDataUpdate,
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            if (response.result) {
+
+                                row.find("#tdProductName").text(response.updateproduct.productName);
+                                row.find("#tdCategoryName").text(response.updateproduct.category.categoryName);
+                                row.find("#tdUnitPrice").text(response.updateproduct.unitPrice);
+                                row.find("#tdUnitsInStock").text(response.updateproduct.unitsInStock);
+
+                                Command: toastr["success"](response.message)
+                                toastr.options = {
+                                    "closeButton": true,
+                                    "debug": false,
+                                    "newestOnTop": false,
+                                    "progressBar": false,
+                                    "positionClass": "toast-top-right",
+                                    "preventDuplicates": false,
+                                    "onclick": null,
+                                    "showDuration": "300",
+                                    "hideDuration": "1000",
+                                    "timeOut": "5000",
+                                    "extendedTimeOut": "1000",
+                                    "showEasing": "swing",
+                                    "hideEasing": "linear",
+                                    "showMethod": "fadeIn",
+                                    "hideMethod": "fadeOut"
+                                }
+                                $('#updateProduct').modal("hide");
+                                
+
+                            } else {
+                                Command: toastr["error"](response.message);
+
+                                toastr.options = {
+                                    "closeButton": true,
+                                    "debug": false,
+                                    "newestOnTop": false,
+                                    "progressBar": false,
+                                    "positionClass": "toast-top-right",
+                                    "preventDuplicates": false,
+                                    "onclick": null,
+                                    "showDuration": "300",
+                                    "hideDuration": "1000",
+                                    "timeOut": "5000",
+                                    "extendedTimeOut": "1000",
+                                    "showEasing": "swing",
+                                    "hideEasing": "linear",
+                                    "showMethod": "fadeIn",
+                                    "hideMethod": "fadeOut"
+                                }
+                            }
+                        }
+
+
+                    })
+
+                });
+
+            });
+
+
+
+        })
+    </script>
+
+}
+

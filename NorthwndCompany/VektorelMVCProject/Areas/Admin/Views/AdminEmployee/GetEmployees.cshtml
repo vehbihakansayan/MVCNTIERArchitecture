@@ -1,0 +1,727 @@
+﻿@using NorthwndCompany.VektorelMVCProject.Areas.Admin.Models
+
+@model CountriesForEmployee
+
+@{
+    Layout = "/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div>
+    <table id="tblEmployees" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Personel No</th>
+                <th>Ad Soyad</th>
+                <th>Ünvan</th>
+                @*<th>Ülke</th>
+                    <th>Şehir</th>
+                    <th>Bağlı Olduğu Personel</th>*@
+                <th>Sil</th>
+                <th>Güncelle</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Employees)
+            {
+                <tr>
+                    <td id="tdDelete">@item.EmployeeID</td>
+                    <td id="tdfullName">@item.FirstName @item.LastName</td>
+                    <td id="tdTitle">@item.Title</td>
+                    @*<td>@item.Country.CountryName</td>
+                        <td>@item.City.CityName</td>
+                        <td>@item.ManagerFullName</td>*@
+                    <td><button id="btnDelete" class="btn btn-danger">Sil</button></td>
+                    <td><button id="btnUpdate" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#divUpdateEmployee">Güncelle</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#addEmployee">Personel Ekle</button>
+<div class="modal fade" id="addEmployee" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Yeni Personel Ekleme Formu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="signup-form" class="row g-3 needs-validation" novalidate>
+                    <div class="col-md-6">
+                        <label for="validationCustom01" class="form-label">Adı</label>
+                        <input type="text" class="form-control" id="validationCustom01" placeholder="Ad" required>
+                        <div class="invalid-feedback">
+                            Lütfen adınızı yazınız.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="validationCustom02" class="form-label">Soyadı</label>
+                        <input type="text" class="form-control" id="validationCustom02" placeholder="Soyad" required>
+                        <div class="invalid-feedback">
+                            Lütfen soyadınızı yazınız.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="validationCustom03" class="form-label">İş Tanımı</label>
+                        <input type="text" class="form-control" id="validationCustom03" placeholder="Ünvan" required>
+                        <div class="invalid-feedback">
+                            Lütfen bir iş tanımı seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="validationCustom04" class="form-label">E-Mail</label>
+                        <input type="email" class="form-control" id="validationCustom04" placeholder="email" required />
+                        <div class="invalid-feedback">
+                            Lütfen bir e-mail adresi seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="validationCustom05" class="form-label">Doğum Tarihi</label>
+                        <input type="date" class="form-control" id="validationCustom05" required />
+                        <div class="invalid-feedback">
+                            Lütfen bir tarih seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="validationCustom06" class="form-label">İşe Giriş Tarihi</label>
+                        <input type="date" class="form-control" id="validationCustom06" required />
+                        <div class="invalid-feedback">
+                            Lütfen bir tarih seçiniz.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="validationCustom07" class="form-label">Yönetici</label>
+                        <select class="form-select" id="validationCustom07" required>
+                            <option selected disabled value="">Yönetici Seçiniz</option>
+                            @foreach (var item in Model.Employees)
+                            {
+                                <option value="@item.EmployeeID">@item.FirstName @item.LastName</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">
+                            Lütfen bir yönetici seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="validationCustom08" class="form-label">Ülke</label>
+                        <select class="form-select" id="validationCustom08" required>
+                            <option selected value="">Ülke Seçiniz</option>
+                            @foreach (var item in Model.Countries)
+                            {
+                                <option value="@item.CountryId">@item.CountryName</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">
+                            Lütfen bir ülke seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="validationCustom09" class="form-label">Şehir</label>
+                        <select class="form-select" id="validationCustom09" required disabled>
+                            <option selected disabled value="">Önce Ülke Seçiniz</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Lütfen bir şehir seçiniz.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="validationCustom10" class="form-label">Fotoğraf</label>
+                        <input type="file" class="form-control" id="validationCustom10" aria-label="file example" required>
+                        <div class="invalid-feedback">Lütfen bir resim dosyası seçiniz</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="validationCustomUsername" class="form-label">Kullanıcı Adı</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text" id="inputGroupPrepend">@@</span>
+                            <input type="text" class="form-control" id="validationCustomUsername" placeholder="Kullanıcı Adı" aria-describedby="inputGroupPrepend" required>
+                            <div class="invalid-feedback">
+                                Lütfen bir kullanıcı adı seçiniz.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="control-label">Şifre</label>
+                        <input type="password" class="form-control" id="validationCustom11" placeholder="Şifre" required />
+                        <div class="invalid-feedback">
+                            Lütfen bir şifre belirleyiniz.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                            <label class="form-check-label" for="invalidCheck">
+                                Koşulları okudum ve kabul ediyorum.
+                            </label>
+                            <div class="invalid-feedback">
+                                Onaylamadan önce koşulları kabul etmeniz gerekir.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="modal-footer">
+                            <button id="btnx" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                            <button id="submitButton" class="btn btn-primary" type="button">Kaydet</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="divUpdateEmployee" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Personel Güncelleme Formu</h5>
+                <button id="btnxUpdate" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>            
+            <div class="modal-body">
+                <form id="formUpdateEmployee" class="row g-3 needs-validation" novalidate>
+                    <div><input type="hidden" class="form-control" id="updateEmployee00"></div>
+                    <div class="col-md-6">
+                        <label class="form-label">Adı</label>
+                        <input type="text" class="form-control" id="updateEmployee01" placeholder="Ad" required>
+                        <div class="invalid-feedback">
+                            Lütfen adınızı yazınız.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Soyadı</label>
+                        <input type="text" class="form-control" id="updateEmployee02" placeholder="Soyad" required>
+                        <div class="invalid-feedback">
+                            Lütfen soyadınızı yazınız.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">İş Tanımı</label>
+                        <input type="text" class="form-control" id="updateEmployee03" placeholder="Ünvan" required>
+                        <div class="invalid-feedback">
+                            Lütfen bir iş tanımı seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">E-Mail</label>
+                        <input type="email" class="form-control" id="updateEmployee04" placeholder="email" required />
+                        <div class="invalid-feedback">
+                            Lütfen bir e-mail adresi seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Doğum Tarihi</label>
+                        <input type="date" class="form-control" id="updateEmployee05" required />
+                        <div class="invalid-feedback">
+                            Lütfen bir tarih seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">İşe Giriş Tarihi</label>
+                        <input type="date" class="form-control" id="updateEmployee06" required />
+                        <div class="invalid-feedback">
+                            Lütfen bir tarih seçiniz.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Yönetici</label>
+                        <select class="form-select" id="updateEmployee07" required>
+                            <option selected disabled value="">Yönetici Seçiniz</option>
+                            @foreach (var item in Model.Employees)
+                            {
+                                <option value="@item.EmployeeID">@item.FirstName @item.LastName</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">
+                            Lütfen bir yönetici seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Ülke</label>
+                        <select class="form-select" id="updateEmployee08" required>
+                            <option selected value="">Ülke Seçiniz</option>
+                            @foreach (var item in Model.Countries)
+                            {
+                                <option value="@item.CountryId">@item.CountryName</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">
+                            Lütfen bir ülke seçiniz.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Şehir</label>
+                        <select class="form-select" id="updateEmployee09" required disabled>
+                            <option selected disabled value="">Önce Ülke Seçiniz</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Lütfen bir şehir seçiniz.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Fotoğraf</label>
+                        <input type="file" id="updateEmployee10" style="display:none" />
+                        <label id="lblfile" class="form-control" for="updateEmployee10"></label>
+                        <div class="invalid-feedback">Lütfen bir resim dosyası seçiniz</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Kullanıcı Adı</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text" id="inputGroupPrepend">@@</span>
+                            <input type="text" class="form-control" id="updateEmployeUsername" placeholder="Kullanıcı Adı" aria-describedby="inputGroupPrepend" required>
+                            <div class="invalid-feedback">
+                                Lütfen bir kullanıcı adı seçiniz.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="control-label">Şifre</label>
+                        <input type="password" class="form-control" id="updateEmployee11" placeholder="Şifre" required />
+                        <div class="invalid-feedback">
+                            Lütfen bir şifre belirleyiniz.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                            <label class="form-check-label" for="invalidCheck">
+                                Koşulları okudum ve kabul ediyorum.
+                            </label>
+                            <div class="invalid-feedback">
+                                Onaylamadan önce koşulları kabul etmeniz gerekir.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="modal-footer">
+                            <button id="btnxUpdate" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                            <button id="submitUpdate" class="btn btn-primary" type="button">Kaydet</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section employeeScript{
+
+    <script>
+        $(document).ready(function () {
+
+            $("#tblEmployees").DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/tr.json"
+                },
+            });
+
+            $("#submitButton").click(function () {
+
+                //Fetch form to apply custom Bootstrap validation
+                var form = $("#signup-form")
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.addClass('was-validated');
+
+                if (form[0].checkValidity() === true) {
+
+                    var fname = $("#validationCustom01").val();
+                    var lname = $("#validationCustom02").val();
+                    var title = $("#validationCustom03").val();
+                    var email = $("#validationCustom04").val();
+                    var birthdate = $("#validationCustom05").val();
+                    var hiredate = $("#validationCustom06").val();
+                    var manager = $("#validationCustom07").val();
+                    var country = $("#validationCustom08").val();
+                    var city = $("#validationCustom09").val();
+                    var photo = $("#validationCustom10").get(0).files[0];
+                    var uname = $("#validationCustomUsername").val();
+                    var password = $("#validationCustom11").val();
+
+                    var formData = new FormData();
+                    formData.append("FirstName", fname);
+                    formData.append("LastName", lname);
+                    formData.append("Title", title);
+                    formData.append("BirthDate", birthdate);
+                    formData.append("HireDate", hiredate);
+                    formData.append("ReportsTo", manager);
+                    formData.append("CountryId", country);
+                    formData.append("CityId", city);
+                    formData.append("EmployeeImage", photo);
+                    formData.append("UserName", uname);
+                    formData.append("Email", email);
+                    formData.append("Password", password);
+
+                    $.ajax({
+                        url: "/Admin/AdminEmployee/AddEmployee",
+                        method: "post",
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (response) {
+                            if (response.result) {
+                                Command: toastr["success"](response.message)
+
+                                toastr.options = {
+                                    "closeButton": true,
+                                    "debug": false,
+                                    "newestOnTop": false,
+                                    "progressBar": false,
+                                    "positionClass": "toast-top-right",
+                                    "preventDuplicates": false,
+                                    "onclick": null,
+                                    "showDuration": "300",
+                                    "hideDuration": "1000",
+                                    "timeOut": "5000",
+                                    "extendedTimeOut": "1000",
+                                    "showEasing": "swing",
+                                    "hideEasing": "linear",
+                                    "showMethod": "fadeIn",
+                                    "hideMethod": "fadeOut"
+                                }
+
+                                var emptr = `<tr>
+                                                <td>`+ response.newemployee.employeeID + `</td>
+                                                <td>`+ response.newemployee.firstName + " " + response.newemployee.lastName + `</td>
+                                                <td>`+ response.newemployee.title + `</td>
+                                                <td><button id="btnDelete" class="btn btn-danger">Sil</button></td>
+                                                <td><button id="btnUpdate" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#divUpdateEmployee">Güncelle</button></td>
+                                            </tr>`
+                                $("#tblEmployees tbody").append(emptr);
+                                $('#addEmployee').modal("hide");
+                                clear();
+
+                            } else {
+
+                                var rp = response.message.errors
+                                for (var i = 0; i < rp.length; i++) {
+                                    Command: toastr["error"](rp[i].message);
+
+                                    toastr.options = {
+                                        "closeButton": true,
+                                        "debug": false,
+                                        "newestOnTop": false,
+                                        "progressBar": false,
+                                        "positionClass": "toast-top-right",
+                                        "preventDuplicates": false,
+                                        "onclick": null,
+                                        "showDuration": "300",
+                                        "hideDuration": "1000",
+                                        "timeOut": "5000",
+                                        "extendedTimeOut": "1000",
+                                        "showEasing": "swing",
+                                        "hideEasing": "linear",
+                                        "showMethod": "fadeIn",
+                                        "hideMethod": "fadeOut"
+                                    }
+                                }
+                                clear();
+                            }
+                        }
+                    });
+                };
+
+            });
+
+            $("#btnx").click(function () {
+                clear();
+            });
+
+            function clear() {
+                $('#addEmployee').on('hidden.bs.modal', function () {
+                    $(this).find('form').trigger('reset');
+                    $("#signup-form").removeClass('was-validated');
+                    $("#validationCustom09").prop("disabled", true);
+                });
+            }
+
+            $("#validationCustom08").change(function () {
+                var countryId = $("#validationCustom08").val();
+                if (countryId != "") {
+                    $.ajax({
+                        url: "/Admin/AdminCity/GetCitiesByCountry",
+                        method: "post",
+                        dataType: "json",
+                        data: { countryId: countryId },
+                        success: function (response) {
+                            if (response.result) {
+                                $("#validationCustom09").empty();
+                                $("#validationCustom09").append("<option value=''>Bir şehir seçiniz</option>")
+
+                                for (var i = 0; i < response.cities.length; i++) {
+                                    $("#validationCustom09").append("<option value='" + response.cities[i].cityId + "'>" + response.cities[i].cityName + "</option>");
+                                }
+                                $("#validationCustom09").removeAttr("disabled");
+                            }
+                        }
+                    });
+
+                } else {
+                    $("#validationCustom09").empty();
+                    $("#validationCustom09").append("<option value=''>Önce Ülke Seçiniz</option>");
+                    $("#validationCustom09").prop("disabled", true);
+                }
+            });
+
+            $("#tblEmployees").on("click", "#btnDelete", function () {
+                Swal.fire({
+                    title: 'Personeli silmek istediğinize emin misiniz?',
+                    showDenyButton: true,
+                    showCancelButton: false,
+                    confirmButtonText: 'Sil',
+                    denyButtonText: `İptal`,
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        var row = $(this).closest("tr");
+                        var employeeId = row.find("#tdDelete").html();
+                        $.ajax({
+                            url: "/Admin/AdminEmployee/DeleteEmployee",
+                            method: "delete",
+                            dataType: "json",
+                            data: { id: employeeId },
+                            success: function (response) {
+                                if (response.result) {
+                                    row.closest("tr").remove();
+                                    Command: toastr["success"](response.message)
+
+                                    toastr.options = {
+                                        "closeButton": true,
+                                        "debug": false,
+                                        "newestOnTop": false,
+                                        "progressBar": false,
+                                        "positionClass": "toast-top-right",
+                                        "preventDuplicates": false,
+                                        "onclick": null,
+                                        "showDuration": "300",
+                                        "hideDuration": "1000",
+                                        "timeOut": "5000",
+                                        "extendedTimeOut": "1000",
+                                        "showEasing": "swing",
+                                        "hideEasing": "linear",
+                                        "showMethod": "fadeIn",
+                                        "hideMethod": "fadeOut"
+                                    }
+                                } else {
+                                    Command: toastr["error"](response.message);
+
+                                    toastr.options = {
+                                        "closeButton": true,
+                                        "debug": false,
+                                        "newestOnTop": false,
+                                        "progressBar": false,
+                                        "positionClass": "toast-top-right",
+                                        "preventDuplicates": false,
+                                        "onclick": null,
+                                        "showDuration": "300",
+                                        "hideDuration": "1000",
+                                        "timeOut": "5000",
+                                        "extendedTimeOut": "1000",
+                                        "showEasing": "swing",
+                                        "hideEasing": "linear",
+                                        "showMethod": "fadeIn",
+                                        "hideMethod": "fadeOut"
+                                    }
+                                }
+                            }
+                        });
+                    };
+                });
+            });
+
+
+            $("#tblEmployees").on("click", "#btnUpdate", function () {
+
+                var row = $(this).closest('tr');
+                var employeeId = row.find("#tdDelete").text();
+
+                $.ajax({
+                    url: "/Admin/AdminEmployee/GetEmployeeForUpdate",
+                    method: "get",
+                    dataType: "json",
+                    data: { id: employeeId },
+                    success: function (response) {
+                        if (response.result) {
+                            $("#updateEmployee01").val(response.newemp.firstName);
+                            $("#updateEmployee02").val(response.newemp.lastName);
+                            $("#updateEmployee03").val(response.newemp.title);
+                            $("#updateEmployee04").val(response.newemp.email);
+                            $("#updateEmployee05").val(response.bdt);
+                            $("#updateEmployee06").val(response.hdt);
+                            $("#updateEmployee07").val(response.newemp.reportsTo);
+                            $("#updateEmployee08").val(response.newemp.countryId);
+                            $("#updateEmployee00").val(employeeId);
+                            var citid = response.newemp.cityId;
+                            var cityname = response.newemp.city.cityName;
+                            if (response.newemp.countryId != "") {
+                                $.ajax({
+                                    url: "/Admin/AdminCity/GetCitiesByCountry",
+                                    method: "post",
+                                    dataType: "json",
+                                    data: { countryId: response.newemp.countryId },
+                                    success: function (response) {
+                                        var cityList = response.cities;
+                                        if (response.result) {
+                                            $("#updateEmployee09").empty();
+                                            for (var i = 0; i < response.cities.length; i++) {
+                                                if (response.cities[i].cityId === citid) {
+                                                    $("#updateEmployee09").append("<option selected value='" + citid + "'>" + cityname + "</option>")
+                                                } else {
+                                                    $("#updateEmployee09").append("<option value='" + response.cities[i].cityId + "'>" + response.cities[i].cityName + "</option>");
+                                                }
+                                            }
+                                            $("#updateEmployee09").removeAttr("disabled");
+                                        }
+
+                                        $("#updateEmployee08").change(function () {
+                                            var countryId = $("#updateEmployee08").val();
+                                            if (countryId != "") {
+                                                $("#updateEmployee09").empty();
+                                                $("#updateEmployee09").append("<option value=''>Bir şehir seçiniz</option>")
+
+                                                for (var i = 0; i < cityList.length; i++) {
+                                                    $("#updateEmployee09").append("<option value='" + cityList[i].cityId + "'>" + cityList[i].cityName + "</option>");
+                                                }
+                                                $("#updateEmployee09").removeAttr("disabled");
+
+                                            } else {
+                                                $("#updateEmployee09").empty();
+                                                $("#updateEmployee09").append("<option value=''>Önce Ülke Seçiniz</option>");
+                                                $("#updateEmployee09").prop("disabled", true);
+                                            }
+                                        });
+                                    }
+
+                               });
+
+                            }                          
+                            $("#lblfile").text(response.newemp.photoPath);
+                            $("#updateEmployeUsername").val(response.newemp.userName);
+                            $("#updateEmployee11").val(response.newemp.password);
+                        }
+                    }
+                });
+
+
+                $("#submitUpdate").click(function () {
+
+                    var form = $("#formUpdateEmployee")
+
+                    if (form[0].checkValidity() === false) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.addClass('was-validated');
+
+                    if (form[0].checkValidity() === true) {
+
+                        var fname = $("#updateEmployee01").val();
+                        var lname = $("#updateEmployee02").val();
+                        var title = $("#updateEmployee03").val();
+                        var email = $("#updateEmployee04").val();
+                        var birthdate = $("#updateEmployee05").val();
+                        var hiredate = $("#updateEmployee06").val();
+                        var manager = $("#updateEmployee07").val();
+                        var country = $("#updateEmployee08").val();
+                        var city = $("#updateEmployee09").val();
+                        var photo = $("#updateEmployee10").get(0).files[0];
+                        var uname = $("#updateEmployeUsername").val();
+                        var password = $("#updateEmployee11").val();
+                        var employeeId = $("#updateEmployee00").val();
+
+                        var formDataUpdate = new FormData();
+                        formDataUpdate.append("FirstName", fname);
+                        formDataUpdate.append("LastName", lname);
+                        formDataUpdate.append("Title", title);
+                        formDataUpdate.append("BirthDate", birthdate);
+                        formDataUpdate.append("HireDate", hiredate);
+                        formDataUpdate.append("ReportsTo", manager);
+                        formDataUpdate.append("CountryId", country);
+                        formDataUpdate.append("CityId", city);
+                        formDataUpdate.append("EmployeeImage", photo);
+                        formDataUpdate.append("UserName", uname);
+                        formDataUpdate.append("Email", email);
+                        formDataUpdate.append("Password", password);
+                        formDataUpdate.append("EmployeeID", employeeId);
+
+                        $.ajax({
+                            url: "/Admin/AdminEmployee/UpdateEmployee",
+                            method: "post",
+                            contentType: false,
+                            processData: false,
+                            data: formDataUpdate,
+                            success: function (response) {
+                                if (response.result) {
+                                    Command: toastr["success"](response.message)
+
+                                    toastr.options = {
+                                        "closeButton": true,
+                                        "debug": false,
+                                        "newestOnTop": false,
+                                        "progressBar": false,
+                                        "positionClass": "toast-top-right",
+                                        "preventDuplicates": false,
+                                        "onclick": null,
+                                        "showDuration": "300",
+                                        "hideDuration": "1000",
+                                        "timeOut": "5000",
+                                        "extendedTimeOut": "1000",
+                                        "showEasing": "swing",
+                                        "hideEasing": "linear",
+                                        "showMethod": "fadeIn",
+                                        "hideMethod": "fadeOut"
+                                    }
+
+                                    row.find("#tdfullName").text(response.editemployee.firstName + " " + response.editemployee.lastName);
+                                    row.find("#tdTitle").text(response.editemployee.title);
+                                    $('#divUpdateEmployee').modal("hide");
+
+                                } else {
+
+                                    var rp = response.message.errors
+                                    for (var i = 0; i < rp.length; i++) {
+                                        Command: toastr["error"](rp[i].message);
+
+                                        toastr.options = {
+                                            "closeButton": true,
+                                            "debug": false,
+                                            "newestOnTop": false,
+                                            "progressBar": false,
+                                            "positionClass": "toast-top-right",
+                                            "preventDuplicates": false,
+                                            "onclick": null,
+                                            "showDuration": "300",
+                                            "hideDuration": "1000",
+                                            "timeOut": "5000",
+                                            "extendedTimeOut": "1000",
+                                            "showEasing": "swing",
+                                            "hideEasing": "linear",
+                                            "showMethod": "fadeIn",
+                                            "hideMethod": "fadeOut"
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    };
+
+                });
+
+
+            });
+
+
+            $('#divUpdateEmployee').on("click", "#btnxUpdate", function () {
+
+                $("#formUpdateEmployee").removeClass('was-validated');
+
+            });
+
+        });
+    </script>
+
+}

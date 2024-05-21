@@ -1,0 +1,27 @@
+﻿@model ProductViewModel
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            @using (Html.BeginForm("EditProduct", "Product", FormMethod.Post))
+            {
+                @Html.Hidden("ProductID", Model.Product.ProductID)
+
+                <label>Ürün Adı</label>
+                @Html.TextBox("ProductName", Model.Product.ProductName, new { @class = "form-control", id = "txtproductName" })
+                <br />
+                <label>Kategorisi</label>
+                @Html.DropDownList("CategoryID", Model.Categories, "Seçiniz...", new { @class = "form-control" })
+                <br />
+                <label>Fiyat</label>
+                @Html.TextBox("UnitPrice", Model.Product.UnitPrice, new { @class = "form-control" })
+                <br />
+                <label>Stok</label>
+                @Html.TextBox("UnitsInStock", Model.Product.UnitsInStock, new { @class = "form-control" })
+
+                <br />
+                <button type="submit" class="btn btn-success">Güncelle</button>
+            }
+        </div>
+    </div>
+</div>

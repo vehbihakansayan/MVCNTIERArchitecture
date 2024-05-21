@@ -1,0 +1,56 @@
+﻿@using NorthwndCompany.VektorelMVCProject.Models.Entities
+@model Employee
+
+<nav id="sidebar">
+    <div class="p-4 pt-5">
+        @*<a href="#" class="img logo rounded-circle mb-5" style="background-image: url(/AdminArea/sidebar/images/logo.jpg);"></a>*@
+        <img class="img logo rounded-circle mb-5" src="@("data:image/png;base64," + Model.Base64Photo)" />
+        <h3 style="color:white;font-family:'Times New Roman', Times, serif;text-align:center">@Model.FirstName @Model.LastName</h3>
+        <ul class="list-unstyled components mb-5">
+            <li>
+                <a href="#">Hakkımızda</a>
+            </li>
+            <li>
+                <a href="/Admin/AdminEmployee/GetEmployees">Personel</a>
+            </li>
+            <li>
+                <a href="/Admin/AdminProduct/GetProducts">Ürünler</a>
+            </li>
+            <li>
+                <a href="/Admin/AdminOrder/GetOrders">Siparişler</a>
+            </li>
+            @* Aşağıya dopru açılan sidebar
+            <li>
+            <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Satışlar/Siparişler</a>
+            <ul class="collapse list-unstyled" id="pageSubmenu">
+                <li>
+                    <a href="#">Personel Satışları</a>
+                </li>
+                <li>
+                    <a href="#">Müşteri Siparişleri</a>
+                </li>
+                <li>
+                    <a href="#">Satış Detayları</a>
+                </li>
+            </ul>
+        </li>*@
+            <li>
+                <a href="/Admin/AdminCustomer/GetCustomers">Müşteriler</a>
+            </li>
+            <li>
+                <a href="/Admin/AdminCategory/CategoryList">Kategoriler</a>
+            </li>
+        </ul>
+
+        <div class="footer">
+            <p>
+                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                Copyright &copy;
+                <script>document.write(new Date().getFullYear());</script> <i class="icon-heart" aria-hidden="true"></i> Vehbi Hakan tarafından yapılmıştır.
+                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+        </div>
+
+    </div>
+</nav>
+
